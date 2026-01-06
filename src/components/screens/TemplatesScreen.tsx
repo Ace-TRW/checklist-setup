@@ -4,32 +4,24 @@ import { campusTemplates } from "../../data/campusTemplates";
 import { ArrowRight, Layers } from "lucide-react";
 
 interface TemplatesScreenProps {
-  expandedTemplate: string | null;
+  expandedTemplates: Set<string>;
   selectedPresetTasks: Set<string>;
-  onExpandTemplate: (id: string | null) => void;
+  onToggleTemplateExpansion: (id: string) => void;
   onTogglePresetTask: (taskId: string) => void;
   onSelectAllPresetTasks: (templateId: string) => void;
   onContinue: () => void;
 }
 
 export function TemplatesScreen({
-  expandedTemplate,
+  expandedTemplates,
   selectedPresetTasks,
-  onExpandTemplate,
+  onToggleTemplateExpansion,
   onTogglePresetTask,
   onSelectAllPresetTasks,
   onContinue,
 }: TemplatesScreenProps) {
   const totalSelectedTasks = selectedPresetTasks.size;
-  const isBlankSelected = expandedTemplate === "blank";
-
-  const handleExpand = (templateId: string) => {
-    if (expandedTemplate === templateId) {
-      onExpandTemplate(null);
-    } else {
-      onExpandTemplate(templateId);
-    }
-  };
+  const hasBlankExpanded = expandedTemplates.has("blank");
 
   return (
     <div className="flex flex-col">
@@ -46,16 +38,16 @@ export function TemplatesScreen({
           Initialize Your Routine
         </h1>
         <p className="text-grey-500 text-sm">
-          Choose a campus preset or start blank
+          Mix and match tasks from any preset
         </p>
       </motion.div>
 
-      {/* Template List */}
+      {/* Template List - scrollable area */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="space-y-3 mb-8"
+        className="space-y-3 mb-8 max-h-[400px] overflow-y-auto pr-1"
       >
         <AnimatePresence mode="sync">
           {campusTemplates.map((template, index) => (
@@ -68,9 +60,9 @@ export function TemplatesScreen({
             >
               <TemplateCard
                 template={template}
-                expanded={expandedTemplate === template.id}
+                expanded={expandedTemplates.has(template.id)}
                 selectedTasks={selectedPresetTasks}
-                onExpand={() => handleExpand(template.id)}
+                onExpand={() => onToggleTemplateExpansion(template.id)}
                 onToggleTask={onTogglePresetTask}
                 onSelectAll={() => onSelectAllPresetTasks(template.id)}
               />
@@ -92,21 +84,21 @@ export function TemplatesScreen({
               <span className="text-white font-medium">{totalSelectedTasks}</span>
               <span className="text-grey-500"> task{totalSelectedTasks !== 1 ? "s" : ""} selected</span>
             </span>
-          ) : isBlankSelected ? (
+          ) : hasBlankExpanded ? (
             <span className="text-grey-400">Starting blank</span>
           ) : (
-            <span className="text-grey-500">Select tasks to continue</span>
+            <span className="text-grey-500">Expand a preset to select tasks</span>
           )}
         </div>
 
         <motion.button
           onClick={onContinue}
-          disabled={totalSelectedTasks === 0 && !isBlankSelected}
-          whileHover={totalSelectedTasks > 0 || isBlankSelected ? { scale: 1.02 } : undefined}
-          whileTap={totalSelectedTasks > 0 || isBlankSelected ? { scale: 0.98 } : undefined}
+          disabled={totalSelectedTasks === 0 && !hasBlankExpanded}
+          whileHover={totalSelectedTasks > 0 || hasBlankExpanded ? { scale: 1.02 } : undefined}
+          whileTap={totalSelectedTasks > 0 || hasBlankExpanded ? { scale: 0.98 } : undefined}
           className="btn-primary h-11 px-6 rounded-xl font-semibold text-sm flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {isBlankSelected ? "Continue" : totalSelectedTasks > 0 ? `Add Selected (${totalSelectedTasks})` : "Continue"}
+          {hasBlankExpanded && totalSelectedTasks === 0 ? "Continue" : totalSelectedTasks > 0 ? `Add Selected (${totalSelectedTasks})` : "Continue"}
           <ArrowRight className="w-4 h-4" />
         </motion.button>
       </motion.div>

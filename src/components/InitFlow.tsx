@@ -12,7 +12,7 @@ export function InitFlow() {
     state,
     isComplete,
     nextScreen,
-    expandTemplate,
+    toggleTemplateExpansion,
     togglePresetTask,
     selectAllPresetTasks,
     toggleLegacyTask,
@@ -62,9 +62,9 @@ export function InitFlow() {
       case 2:
         return (
           <TemplatesScreen
-            expandedTemplate={state.expandedTemplate}
+            expandedTemplates={state.expandedTemplates}
             selectedPresetTasks={state.selectedPresetTasks}
-            onExpandTemplate={expandTemplate}
+            onToggleTemplateExpansion={toggleTemplateExpansion}
             onTogglePresetTask={togglePresetTask}
             onSelectAllPresetTasks={selectAllPresetTasks}
             onContinue={nextScreen}

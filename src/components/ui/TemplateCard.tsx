@@ -23,13 +23,14 @@ export function TemplateCard({
   const isBlank = template.id === "blank";
   const selectedCount = template.tasks.filter((t) => selectedTasks.has(t.id)).length;
   const allSelected = selectedCount === template.tasks.length && template.tasks.length > 0;
+  const hasSelections = selectedCount > 0;
 
   return (
     <motion.div
       layout
       className={cn(
         "template-card rounded-2xl overflow-hidden",
-        expanded && "selected"
+        (expanded || hasSelections) && "selected"
       )}
     >
       {/* Header - clickable to expand/collapse */}
@@ -41,9 +42,9 @@ export function TemplateCard({
           {/* Emoji */}
           <div
             className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
-              expanded ? "bg-primary/20" : "bg-white/[0.04]",
-              isBlank && !expanded && "border border-dashed border-white/10"
+              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-all duration-200",
+              expanded || hasSelections ? "bg-primary/20" : "bg-white/[0.04]",
+              isBlank && !expanded && !hasSelections && "border border-dashed border-white/10"
             )}
           >
             {template.emoji}
@@ -52,8 +53,8 @@ export function TemplateCard({
           {/* Text */}
           <div className="text-left">
             <p className={cn(
-              "text-base font-semibold uppercase tracking-wide",
-              expanded ? "text-white" : "text-grey-300"
+              "text-base font-semibold uppercase tracking-wide transition-colors duration-200",
+              expanded || hasSelections ? "text-white" : "text-grey-300"
             )}>
               {template.name}
             </p>
@@ -63,18 +64,32 @@ export function TemplateCard({
           </div>
         </div>
 
-        {/* Expand indicator */}
-        {!isBlank && (
-          <motion.div
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ChevronDown className={cn(
-              "w-5 h-5",
-              expanded ? "text-primary" : "text-grey-500"
-            )} />
-          </motion.div>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Selection badge when collapsed */}
+          {!expanded && hasSelections && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/20 border border-primary/30"
+            >
+              <Check className="w-3.5 h-3.5 text-primary" strokeWidth={2.5} />
+              <span className="text-sm font-semibold text-primary">{selectedCount}</span>
+            </motion.div>
+          )}
+
+          {/* Expand indicator */}
+          {!isBlank && (
+            <motion.div
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown className={cn(
+                "w-5 h-5",
+                expanded || hasSelections ? "text-primary" : "text-grey-500"
+              )} />
+            </motion.div>
+          )}
+        </div>
       </motion.button>
 
       {/* Expanded task list */}
@@ -86,7 +101,7 @@ export function TemplateCard({
           className="border-t border-white/[0.04]"
         >
           {/* Task list */}
-          <div className="max-h-[240px] overflow-y-auto">
+          <div className="max-h-[200px] overflow-y-auto">
             {template.tasks.map((task) => {
               const isSelected = selectedTasks.has(task.id);
               return (

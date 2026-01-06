@@ -6,7 +6,7 @@ export type Screen = 1 | 2 | 3 | 4;
 
 export interface FlowState {
   screen: Screen;
-  expandedTemplate: string | null;
+  expandedTemplates: Set<string>;
   selectedPresetTasks: Set<string>;
   selectedLegacyTasks: Set<string>;
   hasLegacyData: boolean;
@@ -17,7 +17,7 @@ const STORAGE_KEY = "checklist_v2_init_complete";
 export function useInitFlow() {
   const [state, setState] = useState<FlowState>({
     screen: 1,
-    expandedTemplate: null,
+    expandedTemplates: new Set(),
     selectedPresetTasks: new Set(),
     selectedLegacyTasks: new Set(),
     hasLegacyData: mockLegacyTasks.length > 0,
@@ -63,9 +63,17 @@ export function useInitFlow() {
     });
   }, []);
 
-  // Template expansion (for expand-on-select pattern)
-  const expandTemplate = useCallback((templateId: string | null) => {
-    setState((prev) => ({ ...prev, expandedTemplate: templateId }));
+  // Toggle template expansion (multiple can be expanded)
+  const toggleTemplateExpansion = useCallback((templateId: string) => {
+    setState((prev) => {
+      const newExpanded = new Set(prev.expandedTemplates);
+      if (newExpanded.has(templateId)) {
+        newExpanded.delete(templateId);
+      } else {
+        newExpanded.add(templateId);
+      }
+      return { ...prev, expandedTemplates: newExpanded };
+    });
   }, []);
 
   // Toggle a preset task selection
@@ -143,7 +151,7 @@ export function useInitFlow() {
     setIsComplete(false);
     setState({
       screen: 1,
-      expandedTemplate: null,
+      expandedTemplates: new Set(),
       selectedPresetTasks: new Set(),
       selectedLegacyTasks: new Set(),
       hasLegacyData: mockLegacyTasks.length > 0,
@@ -155,7 +163,7 @@ export function useInitFlow() {
     isComplete,
     nextScreen,
     prevScreen,
-    expandTemplate,
+    toggleTemplateExpansion,
     togglePresetTask,
     selectAllPresetTasks,
     toggleLegacyTask,
