@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Rocket, Zap, Smartphone, Shield } from "lucide-react";
+import { Rocket, Zap, Smartphone, Shield, ArrowRight } from "lucide-react";
 import { Button } from "../ui/Button";
 
 interface WelcomeScreenProps {
@@ -7,89 +7,114 @@ interface WelcomeScreenProps {
 }
 
 const features = [
-  { icon: Zap, text: "Instant Sync Architecture" },
-  { icon: Smartphone, text: "Standalone Web App" },
-  { icon: Shield, text: "Offline-Ready Core" },
+  { icon: Zap, label: "Instant Sync", desc: "Real-time across devices" },
+  { icon: Smartphone, label: "Standalone", desc: "Direct access, no friction" },
+  { icon: Shield, label: "Offline-Ready", desc: "Never miss a task" },
 ];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 export function WelcomeScreen({ onContinue }: WelcomeScreenProps) {
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="text-center"
-    >
+    <div className="text-center">
+      {/* Icon */}
       <motion.div
-        variants={itemVariants}
-        className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/20 flex items-center justify-center"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.1, type: "spring" as const, stiffness: 200 }}
+        className="relative w-16 h-16 mx-auto mb-6"
       >
-        <Rocket className="w-8 h-8 text-primary" />
-      </motion.div>
-
-      <motion.h1
-        variants={itemVariants}
-        className="text-3xl font-bold text-white mb-4"
-      >
-        CHECKLIST 2.0 IS LIVE
-      </motion.h1>
-
-      <motion.p variants={itemVariants} className="text-grey-400 mb-2">
-        We deployed the biggest infrastructure upgrade in the history of The
-        Real World Checklist.
-      </motion.p>
-
-      <motion.p variants={itemVariants} className="text-grey-500 mb-8">
-        The old system wasn't built for where we're going. This one is.
-      </motion.p>
-
-      <motion.div variants={itemVariants} className="border-t border-grey-secondary my-6" />
-
-      <motion.div variants={itemVariants} className="mb-8">
-        <p className="text-grey-400 text-sm mb-4 uppercase tracking-wide">
-          What's New
-        </p>
-        <div className="space-y-3">
-          {features.map((feature, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="flex items-center justify-center gap-3 text-white"
-            >
-              <feature.icon className="w-5 h-5 text-primary" />
-              <span>{feature.text}</span>
-            </motion.div>
-          ))}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-primary-dark/10 animate-pulse-soft" />
+        <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-base-300 to-base-100 flex items-center justify-center border border-primary/20">
+          <Rocket className="w-7 h-7 text-primary" />
         </div>
       </motion.div>
 
-      <motion.div variants={itemVariants} className="border-t border-grey-secondary my-6" />
+      {/* Headline */}
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.15 }}
+        className="mb-2"
+      >
+        <span className="badge badge-gold mb-4">Major Update</span>
+      </motion.div>
 
-      <motion.p variants={itemVariants} className="text-grey-400 mb-6">
-        A fresh initialization is required.
+      <motion.h1
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="font-display text-3xl sm:text-4xl text-gradient-gold mb-2"
+      >
+        Checklist 2.0
+      </motion.h1>
+
+      <motion.p
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.25 }}
+        className="font-display text-xl sm:text-2xl text-white/90 mb-6"
+      >
+        Is Live
       </motion.p>
 
-      <motion.div variants={itemVariants}>
-        <Button onClick={onContinue} size="lg">
-          Continue
+      {/* Description */}
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="max-w-sm mx-auto mb-8"
+      >
+        <p className="text-grey-400 text-sm sm:text-base leading-relaxed">
+          The biggest infrastructure upgrade in The Real World Checklist history.
+        </p>
+      </motion.div>
+
+      {/* Features */}
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.35 }}
+        className="grid grid-cols-3 gap-3 mb-8"
+      >
+        {features.map((feature, i) => (
+          <motion.div
+            key={feature.label}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 + i * 0.05 }}
+            className="inner-card rounded-xl p-3 sm:p-4"
+          >
+            <div className="w-9 h-9 mx-auto mb-2 rounded-lg bg-primary/10 flex items-center justify-center">
+              <feature.icon className="w-4 h-4 text-primary" />
+            </div>
+            <p className="text-white text-xs sm:text-sm font-semibold mb-0.5">
+              {feature.label}
+            </p>
+            <p className="text-grey-500 text-[10px] sm:text-xs hidden sm:block">
+              {feature.desc}
+            </p>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Divider */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ delay: 0.5, duration: 0.4 }}
+        className="accent-line mb-6"
+      />
+
+      {/* CTA */}
+      <motion.div
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.55 }}
+      >
+        <Button onClick={onContinue} size="lg" className="w-full sm:w-auto">
+          <span>Get Started</span>
+          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }
