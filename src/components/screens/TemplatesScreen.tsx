@@ -1,89 +1,114 @@
-import { motion } from "framer-motion";
-import { Button } from "../ui/Button";
+import { motion, AnimatePresence } from "framer-motion";
 import { TemplateCard } from "../ui/TemplateCard";
 import { campusTemplates } from "../../data/campusTemplates";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react";
 
 interface TemplatesScreenProps {
-  selectedTemplate: string | null;
-  onSelectTemplate: (id: string) => void;
+  expandedTemplate: string | null;
+  selectedPresetTasks: Set<string>;
+  onExpandTemplate: (id: string | null) => void;
+  onTogglePresetTask: (taskId: string) => void;
+  onSelectAllPresetTasks: (templateId: string) => void;
   onContinue: () => void;
 }
 
 export function TemplatesScreen({
-  selectedTemplate,
-  onSelectTemplate,
+  expandedTemplate,
+  selectedPresetTasks,
+  onExpandTemplate,
+  onTogglePresetTask,
+  onSelectAllPresetTasks,
   onContinue,
 }: TemplatesScreenProps) {
-  const selectedTemplateData = campusTemplates.find(
-    (t) => t.id === selectedTemplate
-  );
+  const totalSelectedTasks = selectedPresetTasks.size;
+  const isBlankSelected = expandedTemplate === "blank";
+
+  const handleExpand = (templateId: string) => {
+    if (expandedTemplate === templateId) {
+      onExpandTemplate(null);
+    } else {
+      onExpandTemplate(templateId);
+    }
+  };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       {/* Header */}
-      <motion.h1
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="text-2xl font-bold text-white text-center mb-2"
-      >
-        Choose Your Campus
-      </motion.h1>
-
-      <motion.p
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.05 }}
-        className="text-grey-500 text-sm text-center mb-8"
-      >
-        Start with a template or build from scratch
-      </motion.p>
-
-      {/* Template Grid */}
       <motion.div
-        initial={{ y: 10, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center mb-8"
+      >
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] mb-4">
+          <Layers className="w-6 h-6 text-grey-400" strokeWidth={1.5} />
+        </div>
+        <h1 className="font-display text-2xl font-bold text-white mb-2 uppercase tracking-wide">
+          Initialize Your Routine
+        </h1>
+        <p className="text-grey-500 text-sm">
+          Choose a campus preset or start blank
+        </p>
+      </motion.div>
+
+      {/* Template List */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full mb-8"
+        className="space-y-3 mb-8"
       >
-        {campusTemplates.map((template, index) => (
-          <motion.div
-            key={template.id}
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.15 + index * 0.03 }}
-          >
-            <TemplateCard
-              template={template}
-              selected={selectedTemplate === template.id}
-              onSelect={() => onSelectTemplate(template.id)}
-            />
-          </motion.div>
-        ))}
+        <AnimatePresence mode="sync">
+          {campusTemplates.map((template, index) => (
+            <motion.div
+              key={template.id}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.15 + index * 0.05 }}
+              layout
+            >
+              <TemplateCard
+                template={template}
+                expanded={expandedTemplate === template.id}
+                selectedTasks={selectedPresetTasks}
+                onExpand={() => handleExpand(template.id)}
+                onToggleTask={onTogglePresetTask}
+                onSelectAll={() => onSelectAllPresetTasks(template.id)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </motion.div>
 
       {/* Footer */}
       <motion.div
-        initial={{ y: 10, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.35 }}
-        className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full pt-4 border-t border-white/5"
+        transition={{ delay: 0.4 }}
+        className="flex items-center justify-between gap-4 pt-6 border-t border-white/[0.04]"
       >
         <div className="text-sm text-grey-500">
-          {selectedTemplate ? (
+          {totalSelectedTasks > 0 ? (
             <span>
-              <span className="text-white font-medium">{selectedTemplateData?.name}</span>
-              {selectedTemplateData?.taskCount ? ` · ${selectedTemplateData.taskCount} tasks` : ''}
+              <span className="text-white font-medium">{totalSelectedTasks}</span>
+              <span className="text-grey-500"> task{totalSelectedTasks !== 1 ? "s" : ""} selected</span>
             </span>
+          ) : isBlankSelected ? (
+            <span className="text-grey-400">Starting blank</span>
           ) : (
-            'Select a template'
+            <span className="text-grey-500">Select tasks to continue</span>
           )}
         </div>
 
-        <Button onClick={onContinue} disabled={!selectedTemplate}>
-          Continue
+        <motion.button
+          onClick={onContinue}
+          disabled={totalSelectedTasks === 0 && !isBlankSelected}
+          whileHover={totalSelectedTasks > 0 || isBlankSelected ? { scale: 1.02 } : undefined}
+          whileTap={totalSelectedTasks > 0 || isBlankSelected ? { scale: 0.98 } : undefined}
+          className="btn-primary h-11 px-6 rounded-xl font-semibold text-sm flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {isBlankSelected ? "Continue" : totalSelectedTasks > 0 ? `Add Selected (${totalSelectedTasks})` : "Continue"}
           <ArrowRight className="w-4 h-4" />
-        </Button>
+        </motion.button>
       </motion.div>
     </div>
   );

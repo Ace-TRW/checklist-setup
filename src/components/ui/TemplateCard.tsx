@@ -1,81 +1,145 @@
 import { cn } from "../../lib/cn";
 import { motion } from "framer-motion";
-import {
-  PenTool,
-  Video,
-  Share2,
-  ShoppingCart,
-  TrendingUp,
-  Plus,
-  type LucideIcon,
-  Check,
-} from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import type { CampusTemplate } from "../../data/campusTemplates";
-
-const iconMap: Record<string, LucideIcon> = {
-  PenTool,
-  Video,
-  Share2,
-  ShoppingCart,
-  TrendingUp,
-  Plus,
-};
 
 interface TemplateCardProps {
   template: CampusTemplate;
-  selected: boolean;
-  onSelect: () => void;
+  expanded: boolean;
+  selectedTasks: Set<string>;
+  onExpand: () => void;
+  onToggleTask: (taskId: string) => void;
+  onSelectAll: () => void;
 }
 
-export function TemplateCard({ template, selected, onSelect }: TemplateCardProps) {
-  const Icon = iconMap[template.icon] || Plus;
+export function TemplateCard({
+  template,
+  expanded,
+  selectedTasks,
+  onExpand,
+  onToggleTask,
+  onSelectAll,
+}: TemplateCardProps) {
   const isBlank = template.id === "blank";
+  const selectedCount = template.tasks.filter((t) => selectedTasks.has(t.id)).length;
+  const allSelected = selectedCount === template.tasks.length && template.tasks.length > 0;
 
   return (
-    <motion.button
-      onClick={onSelect}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+    <motion.div
+      layout
       className={cn(
-        "relative w-full p-4 rounded-xl cursor-pointer transition-all duration-200",
-        "flex flex-col items-center gap-3 text-center",
-        "border",
-        selected
-          ? "border-primary/50 bg-primary/10"
-          : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/10"
+        "template-card rounded-2xl overflow-hidden",
+        expanded && "selected"
       )}
     >
-      {/* Check */}
-      {selected && (
+      {/* Header - clickable to expand/collapse */}
+      <motion.button
+        onClick={onExpand}
+        className="w-full p-5 flex items-center justify-between cursor-pointer"
+      >
+        <div className="flex items-center gap-4">
+          {/* Emoji */}
+          <div
+            className={cn(
+              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
+              expanded ? "bg-primary/20" : "bg-white/[0.04]",
+              isBlank && !expanded && "border border-dashed border-white/10"
+            )}
+          >
+            {template.emoji}
+          </div>
+
+          {/* Text */}
+          <div className="text-left">
+            <p className={cn(
+              "text-base font-semibold uppercase tracking-wide",
+              expanded ? "text-white" : "text-grey-300"
+            )}>
+              {template.name}
+            </p>
+            <p className="text-sm text-grey-500">
+              {isBlank ? "Build your own" : `${template.taskCount} tasks`}
+            </p>
+          </div>
+        </div>
+
+        {/* Expand indicator */}
+        {!isBlank && (
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ChevronDown className={cn(
+              "w-5 h-5",
+              expanded ? "text-primary" : "text-grey-500"
+            )} />
+          </motion.div>
+        )}
+      </motion.button>
+
+      {/* Expanded task list */}
+      {expanded && !isBlank && (
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          className="border-t border-white/[0.04]"
         >
-          <Check className="w-3 h-3 text-neutral" strokeWidth={3} />
+          {/* Task list */}
+          <div className="max-h-[240px] overflow-y-auto">
+            {template.tasks.map((task) => {
+              const isSelected = selectedTasks.has(task.id);
+              return (
+                <motion.button
+                  key={task.id}
+                  onClick={() => onToggleTask(task.id)}
+                  whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.03)" }}
+                  className="w-full flex items-center justify-between px-5 py-3 border-b border-white/[0.03] last:border-b-0 cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={cn(
+                        "w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200",
+                        isSelected
+                          ? "bg-primary shadow-sm shadow-primary/30"
+                          : "bg-white/[0.04] border border-white/[0.08]"
+                      )}
+                    >
+                      {isSelected && (
+                        <Check className="w-3 h-3 text-neutral" strokeWidth={3} />
+                      )}
+                    </div>
+                    <span className={cn(
+                      "text-sm font-medium",
+                      isSelected ? "text-white" : "text-grey-400"
+                    )}>
+                      {task.title}
+                    </span>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between gap-3 p-4 border-t border-white/[0.04] bg-white/[0.01]">
+            <motion.button
+              onClick={onSelectAll}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="text-sm text-grey-400 hover:text-white transition-colors cursor-pointer"
+            >
+              {allSelected ? "Deselect All" : "Select All"}
+            </motion.button>
+
+            {selectedCount > 0 && (
+              <span className="text-sm font-medium text-primary">
+                {selectedCount} selected
+              </span>
+            )}
+          </div>
         </motion.div>
       )}
-
-      {/* Icon */}
-      <div
-        className={cn(
-          "w-10 h-10 rounded-lg flex items-center justify-center",
-          selected ? "bg-primary/20" : "bg-white/5",
-          isBlank && !selected && "border border-dashed border-white/10"
-        )}
-      >
-        <Icon className={cn("w-5 h-5", selected ? "text-primary" : "text-grey-400")} />
-      </div>
-
-      {/* Label */}
-      <div>
-        <p className={cn("text-sm font-medium", selected ? "text-white" : "text-grey-400")}>
-          {template.name}
-        </p>
-        {template.taskCount > 0 && (
-          <p className="text-xs text-grey-600 mt-0.5">{template.taskCount} tasks</p>
-        )}
-      </div>
-    </motion.button>
+    </motion.div>
   );
 }

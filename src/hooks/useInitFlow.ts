@@ -1,12 +1,14 @@
 import { useState, useCallback } from "react";
 import { mockLegacyTasks } from "../data/mockLegacyTasks";
+import { campusTemplates } from "../data/campusTemplates";
 
 export type Screen = 1 | 2 | 3 | 4;
 
 export interface FlowState {
   screen: Screen;
-  selectedTemplate: string | null;
-  selectedTasks: Set<string>;
+  expandedTemplate: string | null;
+  selectedPresetTasks: Set<string>;
+  selectedLegacyTasks: Set<string>;
   hasLegacyData: boolean;
 }
 
@@ -15,8 +17,9 @@ const STORAGE_KEY = "checklist_v2_init_complete";
 export function useInitFlow() {
   const [state, setState] = useState<FlowState>({
     screen: 1,
-    selectedTemplate: null,
-    selectedTasks: new Set(),
+    expandedTemplate: null,
+    selectedPresetTasks: new Set(),
+    selectedLegacyTasks: new Set(),
     hasLegacyData: mockLegacyTasks.length > 0,
   });
 
@@ -60,27 +63,74 @@ export function useInitFlow() {
     });
   }, []);
 
-  const selectTemplate = useCallback((templateId: string) => {
-    setState((prev) => ({ ...prev, selectedTemplate: templateId }));
+  // Template expansion (for expand-on-select pattern)
+  const expandTemplate = useCallback((templateId: string | null) => {
+    setState((prev) => ({ ...prev, expandedTemplate: templateId }));
   }, []);
 
-  const toggleTask = useCallback((taskId: string) => {
+  // Toggle a preset task selection
+  const togglePresetTask = useCallback((taskId: string) => {
     setState((prev) => {
-      const newSelected = new Set(prev.selectedTasks);
+      const newSelected = new Set(prev.selectedPresetTasks);
       if (newSelected.has(taskId)) {
         newSelected.delete(taskId);
       } else {
         newSelected.add(taskId);
       }
-      return { ...prev, selectedTasks: newSelected };
+      return { ...prev, selectedPresetTasks: newSelected };
     });
   }, []);
 
-  const selectAllTasks = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      selectedTasks: new Set(mockLegacyTasks.map((t) => t.id)),
-    }));
+  // Select all tasks for a specific template
+  const selectAllPresetTasks = useCallback((templateId: string) => {
+    const template = campusTemplates.find((t) => t.id === templateId);
+    if (!template) return;
+
+    setState((prev) => {
+      const templateTaskIds = template.tasks.map((t) => t.id);
+      const allSelected = templateTaskIds.every((id) => prev.selectedPresetTasks.has(id));
+
+      const newSelected = new Set(prev.selectedPresetTasks);
+
+      if (allSelected) {
+        // Deselect all from this template
+        templateTaskIds.forEach((id) => newSelected.delete(id));
+      } else {
+        // Select all from this template
+        templateTaskIds.forEach((id) => newSelected.add(id));
+      }
+
+      return { ...prev, selectedPresetTasks: newSelected };
+    });
+  }, []);
+
+  // Toggle a legacy task selection
+  const toggleLegacyTask = useCallback((taskId: string) => {
+    setState((prev) => {
+      const newSelected = new Set(prev.selectedLegacyTasks);
+      if (newSelected.has(taskId)) {
+        newSelected.delete(taskId);
+      } else {
+        newSelected.add(taskId);
+      }
+      return { ...prev, selectedLegacyTasks: newSelected };
+    });
+  }, []);
+
+  // Select all legacy tasks
+  const selectAllLegacyTasks = useCallback(() => {
+    setState((prev) => {
+      const allSelected = prev.selectedLegacyTasks.size === mockLegacyTasks.length;
+
+      if (allSelected) {
+        return { ...prev, selectedLegacyTasks: new Set() };
+      } else {
+        return {
+          ...prev,
+          selectedLegacyTasks: new Set(mockLegacyTasks.map((t) => t.id)),
+        };
+      }
+    });
   }, []);
 
   const completeFlow = useCallback(() => {
@@ -93,8 +143,9 @@ export function useInitFlow() {
     setIsComplete(false);
     setState({
       screen: 1,
-      selectedTemplate: null,
-      selectedTasks: new Set(),
+      expandedTemplate: null,
+      selectedPresetTasks: new Set(),
+      selectedLegacyTasks: new Set(),
       hasLegacyData: mockLegacyTasks.length > 0,
     });
   }, []);
@@ -104,9 +155,11 @@ export function useInitFlow() {
     isComplete,
     nextScreen,
     prevScreen,
-    selectTemplate,
-    toggleTask,
-    selectAllTasks,
+    expandTemplate,
+    togglePresetTask,
+    selectAllPresetTasks,
+    toggleLegacyTask,
+    selectAllLegacyTasks,
     completeFlow,
     resetFlow,
   };

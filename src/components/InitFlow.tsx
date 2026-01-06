@@ -12,9 +12,11 @@ export function InitFlow() {
     state,
     isComplete,
     nextScreen,
-    selectTemplate,
-    toggleTask,
-    selectAllTasks,
+    expandTemplate,
+    togglePresetTask,
+    selectAllPresetTasks,
+    toggleLegacyTask,
+    selectAllLegacyTasks,
     completeFlow,
     resetFlow,
   } = useInitFlow();
@@ -35,11 +37,11 @@ export function InitFlow() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring" as const, delay: 0.2 }}
-            className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-success/10 border border-success/20 flex items-center justify-center"
+            className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-success/10 border border-success/20 flex items-center justify-center glow-success"
           >
-            <CheckCircle2 className="w-8 h-8 text-success" />
+            <CheckCircle2 className="w-10 h-10 text-success" strokeWidth={1.5} />
           </motion.div>
-          <h1 className="text-2xl font-bold text-white mb-2">You're All Set</h1>
+          <h1 className="font-display text-3xl font-bold text-white mb-2">You're All Set</h1>
           <p className="text-grey-500 mb-8">Your checklist is ready to use.</p>
           <button
             onClick={resetFlow}
@@ -60,17 +62,20 @@ export function InitFlow() {
       case 2:
         return (
           <TemplatesScreen
-            selectedTemplate={state.selectedTemplate}
-            onSelectTemplate={selectTemplate}
+            expandedTemplate={state.expandedTemplate}
+            selectedPresetTasks={state.selectedPresetTasks}
+            onExpandTemplate={expandTemplate}
+            onTogglePresetTask={togglePresetTask}
+            onSelectAllPresetTasks={selectAllPresetTasks}
             onContinue={nextScreen}
           />
         );
       case 3:
         return (
           <RecoveryScreen
-            selectedTasks={state.selectedTasks}
-            onToggleTask={toggleTask}
-            onSelectAll={selectAllTasks}
+            selectedTasks={state.selectedLegacyTasks}
+            onToggleTask={toggleLegacyTask}
+            onSelectAll={selectAllLegacyTasks}
             onContinue={nextScreen}
           />
         );
@@ -84,32 +89,33 @@ export function InitFlow() {
   return (
     <div className="fixed inset-0 bg-backdrop flex items-center justify-center p-4 sm:p-6">
       {/* Ambient glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/[0.03] rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[300px] bg-success/[0.02] rounded-full blur-[100px] pointer-events-none" />
 
       {/* Modal */}
       <motion.div
         initial={{ opacity: 0, scale: 0.98, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="relative w-full max-w-md z-10"
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="relative w-full max-w-lg z-10"
       >
-        <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="glass-card rounded-3xl overflow-hidden">
           {/* Content */}
           <div className="p-8 sm:p-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={state.screen}
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               >
                 {renderScreen()}
               </motion.div>
             </AnimatePresence>
 
             {/* Progress */}
-            <div className="mt-10 pt-6 border-t border-white/5">
+            <div className="mt-10 pt-6 border-t border-white/[0.04]">
               <ProgressDots current={adjustedCurrent} total={totalScreens} />
             </div>
           </div>

@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { Button } from "../ui/Button";
 import { TaskRow } from "../ui/TaskRow";
 import { mockLegacyTasks } from "../../data/mockLegacyTasks";
-import { ArrowRight, Flame } from "lucide-react";
+import { ArrowRight, History } from "lucide-react";
 
 interface RecoveryScreenProps {
   selectedTasks: Set<string>;
@@ -19,65 +18,39 @@ export function RecoveryScreen({
 }: RecoveryScreenProps) {
   const selectedCount = selectedTasks.size;
   const totalCount = mockLegacyTasks.length;
-  const totalStreakDays = mockLegacyTasks
-    .filter((t) => selectedTasks.has(t.id))
-    .reduce((acc, t) => acc + t.streak, 0);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col">
       {/* Header */}
-      <motion.h1
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="text-2xl font-bold text-white text-center mb-2"
-      >
-        Restore Your Habits
-      </motion.h1>
-
-      <motion.p
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.05 }}
-        className="text-grey-500 text-sm text-center mb-6"
-      >
-        We found tasks from your history
-      </motion.p>
-
-      {/* Stats */}
-      {selectedCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-6 mb-6 py-3 px-5 rounded-xl bg-white/[0.02] border border-white/5"
-        >
-          <div className="text-center">
-            <p className="text-xl font-bold text-white">{selectedCount}</p>
-            <p className="text-xs text-grey-500">Selected</p>
-          </div>
-          <div className="w-px h-8 bg-white/10" />
-          <div className="text-center">
-            <div className="flex items-center gap-1">
-              <p className="text-xl font-bold text-streak-fire">{totalStreakDays}</p>
-              <Flame className="w-4 h-4 text-streak-fire" />
-            </div>
-            <p className="text-xs text-grey-500">Streak Days</p>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Task List */}
       <motion.div
-        initial={{ y: 10, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center mb-6"
+      >
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/[0.04] mb-4">
+          <History className="w-6 h-6 text-grey-400" strokeWidth={1.5} />
+        </div>
+        <h1 className="font-display text-2xl font-bold text-white mb-2 uppercase tracking-wide">
+          Restore Your Progress
+        </h1>
+        <p className="text-grey-500 text-sm">
+          We found {totalCount} tasks from your history
+        </p>
+      </motion.div>
+
+      {/* Task List - per-task streaks shown on each row */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="w-full rounded-xl border border-white/5 overflow-hidden mb-6"
+        className="w-full rounded-xl bg-white/[0.01] border border-white/[0.04] overflow-hidden mb-6"
       >
-        <div className="max-h-[200px] overflow-y-auto">
+        <div className="max-h-[280px] overflow-y-auto">
           {mockLegacyTasks.map((task, index) => (
             <motion.div
               key={task.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15 + index * 0.03 }}
             >
               <TaskRow
@@ -90,24 +63,31 @@ export function RecoveryScreen({
         </div>
       </motion.div>
 
-      {/* Footer */}
+      {/* Footer - shows task count only, no aggregated streaks */}
       <motion.div
-        initial={{ y: 10, opacity: 0 }}
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex items-center justify-between gap-4 w-full"
+        className="flex items-center justify-between gap-4 pt-4 border-t border-white/[0.04]"
       >
-        <button
+        <motion.button
           onClick={onSelectAll}
-          className="text-sm text-grey-500 hover:text-white transition-colors cursor-pointer"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="btn-secondary h-10 px-4 rounded-lg text-sm font-medium cursor-pointer"
         >
-          Select All ({totalCount})
-        </button>
+          {selectedCount === totalCount ? "Deselect All" : `Select All (${totalCount})`}
+        </motion.button>
 
-        <Button onClick={onContinue}>
-          {selectedCount > 0 ? "Continue" : "Skip"}
+        <motion.button
+          onClick={onContinue}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="btn-primary h-10 px-5 rounded-lg font-semibold text-sm flex items-center gap-2 cursor-pointer"
+        >
+          {selectedCount > 0 ? `Restore (${selectedCount})` : "Skip"}
           <ArrowRight className="w-4 h-4" />
-        </Button>
+        </motion.button>
       </motion.div>
     </div>
   );

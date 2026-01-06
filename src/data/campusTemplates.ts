@@ -1,4 +1,5 @@
 export interface TemplateTask {
+  id: string;
   title: string;
   recurring: boolean;
 }
@@ -7,6 +8,7 @@ export interface CampusTemplate {
   id: string;
   name: string;
   icon: string;
+  emoji: string;
   taskCount: number;
   description: string;
   tasks: TemplateTask[];
@@ -14,90 +16,76 @@ export interface CampusTemplate {
 
 export const campusTemplates: CampusTemplate[] = [
   {
+    id: "fitness",
+    name: "Fitness",
+    icon: "Dumbbell",
+    emoji: "💪",
+    taskCount: 6,
+    description: "Build your body",
+    tasks: [
+      { id: "fit-1", title: "Morning Workout", recurring: true },
+      { id: "fit-2", title: "Track Macros", recurring: true },
+      { id: "fit-3", title: "10k Steps", recurring: true },
+      { id: "fit-4", title: "Evening Stretch", recurring: true },
+      { id: "fit-5", title: "Weigh In", recurring: true },
+      { id: "fit-6", title: "Meal Prep", recurring: true },
+    ],
+  },
+  {
     id: "copywriting",
     name: "Copywriting",
     icon: "PenTool",
-    taskCount: 8,
-    description: "Master persuasive writing",
+    emoji: "💰",
+    taskCount: 5,
+    description: "Master persuasion",
     tasks: [
-      { title: "Write 3 headlines", recurring: true },
-      { title: "Analyze winning copy (15 min)", recurring: true },
-      { title: "Practice fascinations", recurring: true },
-      { title: "Study direct response ads", recurring: true },
-      { title: "Client outreach (3 prospects)", recurring: true },
-      { title: "Rewrite weak copy", recurring: true },
-      { title: "Update swipe file", recurring: true },
-      { title: "Review & submit work", recurring: true },
-    ],
-  },
-  {
-    id: "content-creation",
-    name: "Content Creation",
-    icon: "Video",
-    taskCount: 7,
-    description: "Build your audience",
-    tasks: [
-      { title: "Content ideation (10 ideas)", recurring: true },
-      { title: "Script/outline writing", recurring: true },
-      { title: "Record content", recurring: true },
-      { title: "Edit & polish", recurring: true },
-      { title: "Create thumbnail/cover", recurring: true },
-      { title: "Publish & optimize", recurring: true },
-      { title: "Engage with comments", recurring: true },
-    ],
-  },
-  {
-    id: "social-media",
-    name: "Social Media",
-    icon: "Share2",
-    taskCount: 7,
-    description: "Grow & monetize",
-    tasks: [
-      { title: "Post to main platform", recurring: true },
-      { title: "Engage 30 min (comments/DMs)", recurring: true },
-      { title: "Study viral content", recurring: true },
-      { title: "DM outreach (10 prospects)", recurring: true },
-      { title: "Reply to all DMs", recurring: true },
-      { title: "Content batch planning", recurring: true },
-      { title: "Analytics review", recurring: true },
+      { id: "copy-1", title: "Write 3 Headlines", recurring: true },
+      { id: "copy-2", title: "Analyze Winning Copy (15 min)", recurring: true },
+      { id: "copy-3", title: "Practice Fascinations", recurring: true },
+      { id: "copy-4", title: "Client Outreach (3 prospects)", recurring: true },
+      { id: "copy-5", title: "Update Swipe File", recurring: true },
     ],
   },
   {
     id: "ecommerce",
-    name: "Ecommerce",
+    name: "Ecom",
     icon: "ShoppingCart",
-    taskCount: 8,
+    emoji: "📈",
+    taskCount: 7,
     description: "Scale your store",
     tasks: [
-      { title: "Product research (30 min)", recurring: true },
-      { title: "Supplier outreach", recurring: true },
-      { title: "Store/listing optimization", recurring: true },
-      { title: "Launch/test new ad", recurring: true },
-      { title: "Review ad metrics", recurring: true },
-      { title: "Process orders", recurring: true },
-      { title: "Customer service inbox", recurring: true },
-      { title: "Competitor analysis", recurring: true },
+      { id: "ecom-1", title: "Product Research (30 min)", recurring: true },
+      { id: "ecom-2", title: "Supplier Outreach", recurring: true },
+      { id: "ecom-3", title: "Store Optimization", recurring: true },
+      { id: "ecom-4", title: "Launch/Test New Ad", recurring: true },
+      { id: "ecom-5", title: "Review Ad Metrics", recurring: true },
+      { id: "ecom-6", title: "Process Orders", recurring: true },
+      { id: "ecom-7", title: "Customer Service", recurring: true },
     ],
   },
   {
-    id: "crypto-investing",
-    name: "Crypto Investing",
-    icon: "TrendingUp",
-    taskCount: 6,
-    description: "Analyze & invest",
+    id: "self-improvement",
+    name: "Self Improvement",
+    icon: "Brain",
+    emoji: "🧠",
+    taskCount: 8,
+    description: "Level up daily",
     tasks: [
-      { title: "Morning market review", recurring: true },
-      { title: "Chart analysis (top holdings)", recurring: true },
-      { title: "Research 1 new project", recurring: true },
-      { title: "Check news & sentiment", recurring: true },
-      { title: "Portfolio rebalance check", recurring: true },
-      { title: "Update investment journal", recurring: true },
+      { id: "self-1", title: "Morning Routine", recurring: true },
+      { id: "self-2", title: "Read 30 Minutes", recurring: true },
+      { id: "self-3", title: "Journal Entry", recurring: true },
+      { id: "self-4", title: "Meditation (10 min)", recurring: true },
+      { id: "self-5", title: "Learn New Skill (1 hr)", recurring: true },
+      { id: "self-6", title: "No Social Media (until noon)", recurring: true },
+      { id: "self-7", title: "Cold Shower", recurring: true },
+      { id: "self-8", title: "Evening Review", recurring: true },
     ],
   },
   {
     id: "blank",
     name: "Start Blank",
     icon: "Plus",
+    emoji: "✏️",
     taskCount: 0,
     description: "Build your own",
     tasks: [],
