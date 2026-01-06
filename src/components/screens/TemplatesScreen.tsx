@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/Button";
 import { TemplateCard } from "../ui/TemplateCard";
 import { campusTemplates } from "../../data/campusTemplates";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 interface TemplatesScreenProps {
   selectedTemplate: string | null;
@@ -20,52 +20,38 @@ export function TemplatesScreen({
   );
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       {/* Header */}
-      <div className="text-center mb-6">
-        <motion.div
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="mb-3"
-        >
-          <span className="badge badge-gold">
-            <Sparkles className="w-3 h-3" />
-            Choose Template
-          </span>
-        </motion.div>
+      <motion.h1
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-2xl font-bold text-white text-center mb-2"
+      >
+        Choose Your Campus
+      </motion.h1>
 
-        <motion.h1
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.05 }}
-          className="font-display text-2xl sm:text-3xl text-white mb-2"
-        >
-          Select Your Campus
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="text-grey-500 text-sm max-w-sm mx-auto"
-        >
-          Start with a template built for your path, or create your own.
-        </motion.p>
-      </div>
+      <motion.p
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.05 }}
+        className="text-grey-500 text-sm text-center mb-8"
+      >
+        Start with a template or build from scratch
+      </motion.p>
 
       {/* Template Grid */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.15 }}
-        className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-6"
+        transition={{ delay: 0.1 }}
+        className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full mb-8"
       >
         {campusTemplates.map((template, index) => (
           <motion.div
             key={template.id}
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 + index * 0.03 }}
+            transition={{ delay: 0.15 + index * 0.03 }}
           >
             <TemplateCard
               template={template}
@@ -76,39 +62,27 @@ export function TemplatesScreen({
         ))}
       </motion.div>
 
-      {/* Selection info + CTA */}
+      {/* Footer */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-grey-secondary/20"
+        transition={{ delay: 0.35 }}
+        className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full pt-4 border-t border-white/5"
       >
-        <div className="text-center sm:text-left">
+        <div className="text-sm text-grey-500">
           {selectedTemplate ? (
-            <p className="text-sm">
-              <span className="text-grey-500">Selected: </span>
-              <span className="text-white font-medium">
-                {selectedTemplateData?.name}
-              </span>
-              {selectedTemplateData && selectedTemplateData.taskCount > 0 && (
-                <span className="text-grey-600 ml-1">
-                  ({selectedTemplateData.taskCount} tasks)
-                </span>
-              )}
-            </p>
+            <span>
+              <span className="text-white font-medium">{selectedTemplateData?.name}</span>
+              {selectedTemplateData?.taskCount ? ` · ${selectedTemplateData.taskCount} tasks` : ''}
+            </span>
           ) : (
-            <p className="text-grey-500 text-sm">Choose a template to continue</p>
+            'Select a template'
           )}
         </div>
 
-        <Button
-          onClick={onContinue}
-          size="md"
-          disabled={!selectedTemplate}
-          className="w-full sm:w-auto"
-        >
-          <span>Continue</span>
-          <ArrowRight className="w-4 h-4 ml-2" />
+        <Button onClick={onContinue} disabled={!selectedTemplate}>
+          Continue
+          <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>
     </div>

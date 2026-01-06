@@ -17,36 +17,35 @@ export function Button({
 }: ButtonProps) {
   return (
     <motion.button
-      whileHover={disabled ? undefined : { scale: 1.01 }}
+      whileHover={disabled ? undefined : { scale: 1.02 }}
       whileTap={disabled ? undefined : { scale: 0.98 }}
       className={cn(
-        "relative font-semibold rounded-xl transition-all duration-200 cursor-pointer inline-flex items-center justify-center",
-        "disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none",
+        "relative font-semibold transition-all duration-200 cursor-pointer inline-flex items-center justify-center gap-2",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
         // Size variants
-        size === "sm" && "px-4 py-2 text-sm",
-        size === "md" && "px-5 py-2.5 text-sm",
-        size === "lg" && "px-6 py-3 text-base",
+        size === "sm" && "h-9 px-4 text-sm rounded-lg",
+        size === "md" && "h-11 px-6 text-sm rounded-xl",
+        size === "lg" && "h-12 px-8 text-base rounded-xl",
         // Style variants
         variant === "primary" && [
-          "bg-gradient-to-r from-primary via-primary to-primary-dark text-neutral font-bold",
-          "shadow-lg shadow-primary/20",
-          "hover:shadow-xl hover:shadow-primary/25",
-          "border border-primary-light/30",
+          "bg-primary text-neutral",
+          "hover:bg-primary-light",
+          "shadow-[0_1px_2px_rgba(0,0,0,0.3),0_4px_16px_rgba(201,168,97,0.2)]",
+          "hover:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_rgba(201,168,97,0.3)]",
         ],
         variant === "secondary" && [
-          "bg-grey-800/50 border border-grey-secondary text-white",
-          "hover:bg-grey-800 hover:border-grey-600",
+          "bg-base-300 text-white border border-white/10",
+          "hover:bg-base-300/80 hover:border-white/20",
         ],
         variant === "ghost" && [
-          "text-grey-400 hover:text-white bg-transparent border-none",
-          "hover:bg-grey-800/50",
+          "text-grey-400 hover:text-white hover:bg-white/5",
         ],
         className
       )}
       disabled={disabled}
       {...(props as any)}
     >
-      <span className="relative flex items-center">{children}</span>
+      {children}
     </motion.button>
   );
 }

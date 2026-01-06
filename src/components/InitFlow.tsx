@@ -29,29 +29,24 @@ export function InitFlow() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center max-w-md"
+          className="text-center"
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: "spring" as const, delay: 0.2, stiffness: 200 }}
-            className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-success/20 to-success/5 flex items-center justify-center border border-success/20"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring" as const, delay: 0.2 }}
+            className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-success/10 border border-success/20 flex items-center justify-center"
           >
-            <CheckCircle2 className="w-10 h-10 text-success" />
+            <CheckCircle2 className="w-8 h-8 text-success" />
           </motion.div>
-          <h1 className="font-display text-3xl text-white mb-3">
-            You're All Set
-          </h1>
-          <p className="text-grey-500 mb-8 leading-relaxed">
-            Your checklist has been initialized. Start building unstoppable habits.
-          </p>
+          <h1 className="text-2xl font-bold text-white mb-2">You're All Set</h1>
+          <p className="text-grey-500 mb-8">Your checklist is ready to use.</p>
           <button
             onClick={resetFlow}
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-grey-500 hover:text-white transition-colors cursor-pointer rounded-lg hover:bg-grey-800/50"
+            className="inline-flex items-center gap-2 text-grey-500 hover:text-white transition-colors cursor-pointer text-sm"
           >
             <RotateCcw className="w-4 h-4" />
-            <span className="text-sm font-medium">Run Setup Again</span>
+            Run Setup Again
           </button>
         </motion.div>
       </div>
@@ -87,44 +82,39 @@ export function InitFlow() {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 z-50">
+    <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6">
       {/* Background */}
       <div className="absolute inset-0 bg-backdrop" />
 
-      {/* Ambient glow effects */}
+      {/* Ambient glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-20%] left-[10%] w-[500px] h-[500px] bg-primary/[0.03] rounded-full blur-[100px]" />
-        <div className="absolute bottom-[-10%] right-[20%] w-[400px] h-[400px] bg-primary-dark/[0.04] rounded-full blur-[100px]" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/[0.03] rounded-full blur-[120px]" />
       </div>
 
-      {/* Modal Container */}
+      {/* Modal */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        initial={{ opacity: 0, scale: 0.98, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-xl"
+        transition={{ duration: 0.3 }}
+        className="relative w-full max-w-md"
       >
-        {/* Card */}
-        <div className="glass-card rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/40">
-          {/* Top border accent */}
-          <div className="absolute top-0 inset-x-8 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-
+        <div className="glass-card rounded-2xl">
           {/* Content */}
-          <div className="p-6 sm:p-8 lg:p-10">
+          <div className="p-8 sm:p-10">
             <AnimatePresence mode="wait">
               <motion.div
                 key={state.screen}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.25, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
               >
                 {renderScreen()}
               </motion.div>
             </AnimatePresence>
 
-            {/* Footer with progress */}
-            <div className="mt-8 pt-6 border-t border-grey-secondary/30">
+            {/* Progress */}
+            <div className="mt-10 pt-6 border-t border-white/5">
               <ProgressDots current={adjustedCurrent} total={totalScreens} />
             </div>
           </div>

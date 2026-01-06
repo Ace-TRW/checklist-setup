@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/Button";
 import { TaskRow } from "../ui/TaskRow";
 import { mockLegacyTasks } from "../../data/mockLegacyTasks";
-import { ArrowRight, History, RotateCcw, Flame } from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 
 interface RecoveryScreenProps {
   selectedTasks: Set<string>;
@@ -24,59 +24,43 @@ export function RecoveryScreen({
     .reduce((acc, t) => acc + t.streak, 0);
 
   return (
-    <div>
+    <div className="flex flex-col items-center">
       {/* Header */}
-      <div className="text-center mb-6">
-        <motion.div
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="mb-3"
-        >
-          <span className="badge badge-success">
-            <History className="w-3 h-3" />
-            Data Recovery
-          </span>
-        </motion.div>
+      <motion.h1
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-2xl font-bold text-white text-center mb-2"
+      >
+        Restore Your Habits
+      </motion.h1>
 
-        <motion.h1
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.05 }}
-          className="font-display text-2xl sm:text-3xl text-white mb-2"
-        >
-          Restore Your Habits
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="text-grey-500 text-sm max-w-sm mx-auto"
-        >
-          We found tasks from October. Select which to restore with streaks intact.
-        </motion.p>
-      </div>
+      <motion.p
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.05 }}
+        className="text-grey-500 text-sm text-center mb-6"
+      >
+        We found tasks from your history
+      </motion.p>
 
       {/* Stats */}
       {selectedCount > 0 && (
         <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="mb-4"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-6 mb-6 py-3 px-5 rounded-xl bg-white/[0.02] border border-white/5"
         >
-          <div className="flex items-center justify-center gap-8 py-3 px-4 rounded-xl inner-card">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-white">{selectedCount}</p>
-              <p className="text-[10px] text-grey-500 uppercase tracking-wider font-medium">Tasks</p>
+          <div className="text-center">
+            <p className="text-xl font-bold text-white">{selectedCount}</p>
+            <p className="text-xs text-grey-500">Selected</p>
+          </div>
+          <div className="w-px h-8 bg-white/10" />
+          <div className="text-center">
+            <div className="flex items-center gap-1">
+              <p className="text-xl font-bold text-streak-fire">{totalStreakDays}</p>
+              <Flame className="w-4 h-4 text-streak-fire" />
             </div>
-            <div className="w-px h-8 bg-grey-secondary" />
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-1.5">
-                <p className="text-2xl font-bold text-streak-fire">{totalStreakDays}</p>
-                <Flame className="w-4 h-4 text-streak-fire" />
-              </div>
-              <p className="text-[10px] text-grey-500 uppercase tracking-wider font-medium">Streak Days</p>
-            </div>
+            <p className="text-xs text-grey-500">Streak Days</p>
           </div>
         </motion.div>
       )}
@@ -85,16 +69,16 @@ export function RecoveryScreen({
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.15 }}
-        className="rounded-xl border border-grey-secondary/30 overflow-hidden mb-6"
+        transition={{ delay: 0.1 }}
+        className="w-full rounded-xl border border-white/5 overflow-hidden mb-6"
       >
-        <div className="max-h-[220px] overflow-y-auto">
+        <div className="max-h-[200px] overflow-y-auto">
           {mockLegacyTasks.map((task, index) => (
             <motion.div
               key={task.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + index * 0.04 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 + index * 0.03 }}
             >
               <TaskRow
                 task={task}
@@ -106,28 +90,23 @@ export function RecoveryScreen({
         </div>
       </motion.div>
 
-      {/* Actions */}
+      {/* Footer */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.35 }}
-        className="flex flex-col sm:flex-row items-center justify-between gap-3"
+        transition={{ delay: 0.3 }}
+        className="flex items-center justify-between gap-4 w-full"
       >
         <button
           onClick={onSelectAll}
-          className="inline-flex items-center gap-2 px-3 py-2 text-grey-400 hover:text-white transition-colors text-sm font-medium cursor-pointer"
+          className="text-sm text-grey-500 hover:text-white transition-colors cursor-pointer"
         >
-          <RotateCcw className="w-3.5 h-3.5" />
-          Restore All ({totalCount})
+          Select All ({totalCount})
         </button>
 
-        <Button onClick={onContinue} size="md" className="w-full sm:w-auto">
-          <span>
-            {selectedCount > 0
-              ? `Continue with ${selectedCount}`
-              : "Skip Recovery"}
-          </span>
-          <ArrowRight className="w-4 h-4 ml-2" />
+        <Button onClick={onContinue}>
+          {selectedCount > 0 ? "Continue" : "Skip"}
+          <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>
     </div>

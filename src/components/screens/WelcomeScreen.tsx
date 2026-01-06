@@ -7,112 +7,83 @@ interface WelcomeScreenProps {
 }
 
 const features = [
-  { icon: Zap, label: "Instant Sync", desc: "Real-time across devices" },
-  { icon: Smartphone, label: "Standalone", desc: "Direct access, no friction" },
-  { icon: Shield, label: "Offline-Ready", desc: "Never miss a task" },
+  { icon: Zap, label: "Instant Sync" },
+  { icon: Smartphone, label: "Standalone App" },
+  { icon: Shield, label: "Offline Ready" },
 ];
 
 export function WelcomeScreen({ onContinue }: WelcomeScreenProps) {
   return (
-    <div className="text-center">
-      {/* Icon */}
+    <div className="flex flex-col items-center">
+      {/* Hero Icon */}
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.1, type: "spring" as const, stiffness: 200 }}
-        className="relative w-16 h-16 mx-auto mb-6"
+        transition={{ duration: 0.4 }}
+        className="mb-8"
       >
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 to-primary-dark/10 animate-pulse-soft" />
-        <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-base-300 to-base-100 flex items-center justify-center border border-primary/20">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20">
           <Rocket className="w-7 h-7 text-primary" />
         </div>
       </motion.div>
 
-      {/* Headline */}
+      {/* Badge */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.15 }}
-        className="mb-2"
+        transition={{ delay: 0.1 }}
+        className="mb-6"
       >
-        <span className="badge badge-gold mb-4">Major Update</span>
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium">
+          Major Update
+        </span>
       </motion.div>
 
+      {/* Title */}
       <motion.h1
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="font-display text-3xl sm:text-4xl text-gradient-gold mb-2"
+        transition={{ delay: 0.15 }}
+        className="text-3xl sm:text-4xl font-bold text-white text-center mb-3"
       >
-        Checklist 2.0
+        Checklist <span className="text-primary">2.0</span>
       </motion.h1>
 
+      {/* Subtitle */}
       <motion.p
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.25 }}
-        className="font-display text-xl sm:text-2xl text-white/90 mb-6"
+        transition={{ delay: 0.2 }}
+        className="text-grey-400 text-center max-w-sm mb-10 leading-relaxed"
       >
-        Is Live
+        The biggest infrastructure upgrade in The Real World Checklist history.
+        Faster, smarter, unstoppable.
       </motion.p>
-
-      {/* Description */}
-      <motion.div
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="max-w-sm mx-auto mb-8"
-      >
-        <p className="text-grey-400 text-sm sm:text-base leading-relaxed">
-          The biggest infrastructure upgrade in The Real World Checklist history.
-        </p>
-      </motion.div>
 
       {/* Features */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.35 }}
-        className="grid grid-cols-3 gap-3 mb-8"
+        transition={{ delay: 0.25 }}
+        className="flex items-center justify-center gap-6 mb-10"
       >
-        {features.map((feature, i) => (
-          <motion.div
-            key={feature.label}
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 + i * 0.05 }}
-            className="inner-card rounded-xl p-3 sm:p-4"
-          >
-            <div className="w-9 h-9 mx-auto mb-2 rounded-lg bg-primary/10 flex items-center justify-center">
-              <feature.icon className="w-4 h-4 text-primary" />
-            </div>
-            <p className="text-white text-xs sm:text-sm font-semibold mb-0.5">
-              {feature.label}
-            </p>
-            <p className="text-grey-500 text-[10px] sm:text-xs hidden sm:block">
-              {feature.desc}
-            </p>
-          </motion.div>
+        {features.map((feature) => (
+          <div key={feature.label} className="flex items-center gap-2 text-grey-500">
+            <feature.icon className="w-4 h-4 text-grey-500" />
+            <span className="text-sm">{feature.label}</span>
+          </div>
         ))}
       </motion.div>
-
-      {/* Divider */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ delay: 0.5, duration: 0.4 }}
-        className="accent-line mb-6"
-      />
 
       {/* CTA */}
       <motion.div
         initial={{ y: 10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.55 }}
+        transition={{ delay: 0.3 }}
       >
-        <Button onClick={onContinue} size="lg" className="w-full sm:w-auto">
-          <span>Get Started</span>
-          <ArrowRight className="w-4 h-4 ml-2" />
+        <Button onClick={onContinue} size="lg">
+          Get Started
+          <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>
     </div>
